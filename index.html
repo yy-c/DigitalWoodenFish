@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电子木鱼</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Ma Shan Zheng', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            color: #8B4513;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            letter-spacing: 3px;
+        }
+        
+        .merits-display {
+            font-size: 2rem;
+            margin: 20px 0;
+            padding: 15px 0;
+            color: #CD5C5C;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .merits-progress {
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 500px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .merits-progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, #4CAF50, #FFD700);
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+        
+        .wooden-fish {
+            width: 220px;
+            height: 150px;
+            position: relative;
+            margin: 30px auto;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .wooden-fish:hover {
+            transform: scale(1.05);
+        }
+        
+        .wooden-fish:active {
+            transform: scale(0.98);
+        }
+        
+        .fish-body {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #8B4513, #A0522D);
+            border-radius: 50% 50% 60% 60% / 80% 80% 20% 20%;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        
+        .fish-pattern {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 80%;
+            background: repeating-radial-gradient(
+                circle, 
+                #D2691E 0px, 
+                #D2691E 5px, 
+                transparent 5px, 
+                transparent 12px
+            );
+            border-radius: 50%;
+        }
+        
+        .fish-face {
+            position: absolute;
+            top: 40%;
+            left: 15%;
+            width: 15px;
+            height: 15px;
+            background: #000;
+            border-radius: 50%;
+        }
+        
+        .fish-ridge {
+            position: absolute;
+            top: 25%;
+            width: 100%;
+            height: 20px;
+            background: #5D4037;
+            border-radius: 5px;
+        }
+        
+        .merit-plus {
+            position: absolute;
+            font-size: 1.8rem;
+            color: #CD5C5C;
+            font-weight: bold;
+            animation: floatUp 1.5s ease-out forwards;
+            pointer-events: none;
+            z-index: 100;
+            user-select: none;
+        }
+        
+        .completed-screen {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .completed-message {
+            font-size: 3rem;
+            color: #4CAF50;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .restart-button {
+            background: linear-gradient(to bottom, #8B4513, #A0522D);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Ma Shan Zheng', sans-serif;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .restart-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .instruction {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 500px;
+        }
+        
+        .appearance-note {
+            font-size: 1.1rem;
+            color: #777;
+            margin-top: 15px;
+            font-style: italic;
+        }
+        
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-70px);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .wooden-fish {
+                width: 180px;
+                height: 120px;
+            }
+            
+            .completed-message {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>电子木鱼</h1>
+        <p class="appearance-note">点击木鱼积累功德，愿您平安喜乐</p>
+        
+        <div class="merits-display">
+            功德: <span id="merits">0</span>
+        </div>
+        
+        <div class="merits-progress">
+            <div class="merits-progress-bar" id="progress-bar" style="width: 0%"></div>
+        </div>
+        
+        <div class="wooden-fish" id="wooden-fish">
+            <div class="fish-body">
+                <div class="fish-ridge"></div>
+                <div class="fish-pattern"></div>
+                <div class="fish-face"></div>
+            </div>
+        </div>
+        
+        <p class="instruction">敲击木鱼或者点击屏幕任意位置，每击功德+1</p>
+        
+        <div class="completed-screen" id="completed-screen">
+            <div class="completed-message">
+                🎉 功德圆满 🎉
+            </div>
+            <button class="restart-button" id="restart-button">积累新功德</button>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const woodenFish = document.getElementById('wooden-fish');
+            const meritsDisplay = document.getElementById('merits');
+            const progressBar = document.getElementById('progress-bar');
+            const completedScreen = document.getElementById('completed-screen');
+            const restartButton = document.getElementById('restart-button');
+            
+            let merits = 0;
+            const maxMerits = 1000;
+            
+            // 创建功德提示元素的工厂函数
+            function createMeritPlusElement(x, y) {
+                const element = document.createElement('div');
+                element.className = 'merit-plus';
+                element.textContent = '功德+1';
+                element.style.left = `${x}px`;
+                element.style.top = `${y}px`;
+                document.body.appendChild(element);
+                
+                // 动画结束后移除元素
+                setTimeout(() => {
+                    element.remove();
+                }, 1500);
+            }
+            
+            // 增加功德功能
+            function addMerit(e) {
+                if (merits >= maxMerits) return;
+                
+                merits++;
+                meritsDisplay.textContent = merits;
+                
+                // 更新进度条
+                const percent = (merits / maxMerits) * 100;
+                progressBar.style.width = `${percent}%`;
+                
+                // 创建"功德+1"元素
+                const rect = e.target.getBoundingClientRect();
+                const x = e.clientX;
+                const y = e.clientY;
+                createMeritPlusElement(x, y);
+                
+                // 播放声音
+                playSound();
+                
+                // 检查是否达到最大值
+                if (merits >= maxMerits) {
+                    setTimeout(() => {
+                        completedScreen.style.display = 'flex';
+                    }, 300);
+                }
+            }
+            
+            // 播放敲击音效
+            function playSound() {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(150, audioContext.currentTime + 0.1);
+                
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.3);
+            }
+            
+            // 重新开始功能
+            function restartMerits() {
+                merits = 0;
+                meritsDisplay.textContent = merits;
+                progressBar.style.width = '0%';
+                completedScreen.style.display = 'none';
+            }
+            
+            // 事件监听
+            woodenFish.addEventListener('click', addMerit);
+            document.addEventListener('click', (e) => {
+                if (e.target !== woodenFish && merits < maxMerits) {
+                    addMerit(e);
+                }
+            });
+            restartButton.addEventListener('click', restartMerits);
+        });
+    </script>
+</body>
+</html>
